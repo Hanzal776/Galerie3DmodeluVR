@@ -16,7 +16,7 @@ Cílem projektu je vytvořit plynulé a vizuálně atraktivní prostředí 3D ga
 
 ---
 
-## Plán vývoje (Harmonogram do 1. 12.)
+## Plán vývoje
 
 * [x] **1. Fáze: Nastavení projektu & VR prostředí**
   * Konfigurace Unity URP a OpenXR pro Meta Quest 3.

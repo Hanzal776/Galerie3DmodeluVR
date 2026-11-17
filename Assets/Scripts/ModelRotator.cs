@@ -6,94 +6,50 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 [RequireComponent(typeof(XRGrabInteractable))]
 public class ModelRotator : MonoBehaviour
 {
-    [Header("Right Controller Actions (A / B)")]
-    public InputActionReference rightRotateRightAction; // obvykle B (Secondary)
-    public InputActionReference rightRotateLeftAction;  // obvykle A (Primary)
-
-    [Header("Left Controller Actions (X / Y)")]
-    public InputActionReference leftRotateRightAction;  // obvykle Y (Secondary)
-    public InputActionReference leftRotateLeftAction;   // obvykle X (Primary)
+    [Header("Actions")]
+    public InputActionReference rotateRightAction; 
+    public InputActionReference rotateLeftAction;  
 
     [Header("Settings")]
     public float rotationSpeed = 90f;
 
-    [Header("Debug")]
-    [SerializeField] private bool isHeld = false; // Vidíš v Inspectoru, jestli je model v ruce
-
+    [SerializeField] private bool isHeld = false;
     private XRGrabInteractable grabInteractable;
 
-    void Awake()
-    {
-        grabInteractable = GetComponent<XRGrabInteractable>();
-    }
+    void Awake() => grabInteractable = GetComponent<XRGrabInteractable>();
 
     void OnEnable()
     {
-        grabInteractable.selectEntered.AddListener(OnGrabbed);
-        grabInteractable.selectExited.AddListener(OnReleased);
-
-        EnableAction(rightRotateRightAction);
-        EnableAction(rightRotateLeftAction);
-        EnableAction(leftRotateRightAction);
-        EnableAction(leftRotateLeftAction);
+        grabInteractable.selectEntered.AddListener(s => isHeld = true);
+        grabInteractable.selectExited.AddListener(s => isHeld = false);
+        
+        if (rotateRightAction?.action != null) rotateRightAction.action.Enable();
+        if (rotateLeftAction?.action != null) rotateLeftAction.action.Enable();
     }
 
     void OnDisable()
     {
-        grabInteractable.selectEntered.RemoveListener(OnGrabbed);
-        grabInteractable.selectExited.RemoveListener(OnReleased);
+        grabInteractable.selectEntered.RemoveListener(s => isHeld = false);
+        grabInteractable.selectExited.RemoveListener(s => isHeld = true);
 
-        DisableAction(rightRotateRightAction);
-        DisableAction(rightRotateLeftAction);
-        DisableAction(leftRotateRightAction);
-        DisableAction(leftRotateLeftAction);
-    }
-
-    private void EnableAction(InputActionReference actionRef)
-    {
-        if (actionRef != null && actionRef.action != null) actionRef.action.Enable();
-    }
-
-    private void DisableAction(InputActionReference actionRef)
-    {
-        if (actionRef != null && actionRef.action != null) actionRef.action.Disable();
-    }
-
-    private void OnGrabbed(SelectEnterEventArgs args)
-    {
-        isHeld = true;
-    }
-
-    private void OnReleased(SelectExitEventArgs args)
-    {
-        isHeld = false;
+        if (rotateRightAction?.action != null) rotateRightAction.action.Disable();
+        if (rotateLeftAction?.action != null) rotateLeftAction.action.Disable();
     }
 
     void Update()
-{
-    if (!isHeld) return;
-
-    float rotationStep = rotationSpeed * Time.deltaTime;
-
-    bool rotateRight = IsPressed(rightRotateRightAction) || IsPressed(leftRotateRightAction);
-    bool rotateLeft = IsPressed(rightRotateLeftAction) || IsPressed(leftRotateLeftAction);
-
-    // --- DIAGNOSTIKA TLAČÍTEK ---
-    if (rotateRight)
     {
-        Debug.Log("Detekován stisk tlačítka pro OTÁČENÍ DOPRAVA (B / Y)");
-        transform.Rotate(Vector3.up, -rotationStep, Space.World);
-    }
+        if (!isHeld) return;
 
-    if (rotateLeft)
-    {
-        Debug.Log("Detekován stisk tlačítka pro OTÁČENÍ DOLEVA (A / X)");
-        transform.Rotate(Vector3.up, rotationStep, Space.World);
-    }
-}
+        float step = rotationSpeed * Time.deltaTime;
 
-    private bool IsPressed(InputActionReference actionRef)
-    {
-        return actionRef != null && actionRef.action != null && actionRef.action.IsPressed();
+        if (rotateRightAction != null && rotateRightAction.action != null && rotateRightAction.action.IsPressed())
+        {
+            transform.Rotate(Vector3.up, -step, Space.World);
+        }
+
+        if (rotateLeftAction != null && rotateLeftAction.action != null && rotateLeftAction.action.IsPressed())
+        {
+            transform.Rotate(Vector3.up, step, Space.World);
+        }
     }
 }

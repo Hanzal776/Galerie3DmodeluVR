@@ -71,4 +71,4 @@ Cílem projektu je vytvořit plynulé a vizuálně atraktivní prostředí 3D ga
 ### Doporučené návody na začátek:
 *  [Unity XR Interaction Toolkit Tutorial (YouTube)](https://www.youtube.com/results?search_query=Unity+XR+Interaction+Toolkit+tutorial) — Základy uchopování objektů a VR pohybu.
 *  [Meta Quest 3 Unity Setup (YouTube)](https://www.youtube.com/results?search_query=Unity+Meta+Quest+3+setup+OpenXR) — Kompaktní návody na nastavení OpenXR.
-*  [Poly Pizza](https://poly.pizza/) & [Sketchfab](https://sketchfab.com/) — Bezplatné 3D modely a exponáty do galerie.
+*  [Poly Pizza](https://poly.pizza/) - Bezplatné 3D modely a exponáty do galerie.

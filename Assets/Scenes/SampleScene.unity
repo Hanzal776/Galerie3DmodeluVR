@@ -1971,7 +1971,54 @@ Transform:
   m_GameObject: {fileID: 954737578}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.069, y: 1.276, z: 0.496}
+  m_LocalPosition: {x: 1.069, y: 0.276, z: 0.496}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1146505003
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1146505005}
+  - component: {fileID: 1146505004}
+  m_Layer: 0
+  m_Name: WebModelLoader
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1146505004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1146505003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 203516ecf3ce9a24a967ca0ac363a2cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RuntimeModelLoader
+  catalogUrl: https://poly.pizza
+  spawnPoint: {fileID: 954737579}
+  addGrabInteractable: 1
+--- !u!4 &1146505005
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1146505003}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.31, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2112,6 +2159,8 @@ MonoBehaviour:
   buttonContainer: {fileID: 212720571}
   buttonPrefab: {fileID: 5969898932069961029, guid: 28f4755ff130c2049a0d0981ba8c2d19, type: 3}
   spawnPoint: {fileID: 954737579}
+  modelLoader: {fileID: 1146505004}
+  webCatalogButtonLabel: Web Modely
 --- !u!114 &1203371934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3315,13 +3364,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1530ae5737b7bff47a68ca2f0befc749, type: 3}
-  m_Name: ''
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ModelRotator
-  rightRotateRightAction: {fileID: -3599823989380923159, guid: b6d5c44ebe3244b7692e81ae8265eb22, type: 3}
-  rightRotateLeftAction: {fileID: -8069514856583376848, guid: b6d5c44ebe3244b7692e81ae8265eb22, type: 3}
-  leftRotateRightAction: {fileID: -3599823989380923159, guid: b6d5c44ebe3244b7692e81ae8265eb22, type: 3}
-  leftRotateLeftAction: {fileID: -8069514856583376848, guid: b6d5c44ebe3244b7692e81ae8265eb22, type: 3}
+  rotateRightAction: {fileID: 0}
+  rotateLeftAction: {fileID: 0}
   rotationSpeed: 90
+  isHeld: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -3335,3 +3383,4 @@ SceneRoots:
   - {fileID: 1948876104}
   - {fileID: 1203371930}
   - {fileID: 954737579}
+  - {fileID: 1146505005}

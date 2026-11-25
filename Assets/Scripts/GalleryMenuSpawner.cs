@@ -7,29 +7,34 @@ public class GalleryMenuSpawner : MonoBehaviour
     [Header("UI Menu & Layout")]
     [Tooltip("Plovoucí Canvas s menu")]
     public GameObject menuCanvas;
-    
+
     [Tooltip("Panel s komponentou Grid Layout Group, kam se budou tvořit tlačítka")]
-    public Transform buttonContainer; 
-    
+    public Transform buttonContainer;
+
     [Tooltip("Prefab UI Tlačítka s TextMeshPro komponentou")]
-    public GameObject buttonPrefab;   
+    public GameObject buttonPrefab;
 
     [Header("Spawn Nastavení")]
     [Tooltip("Místo, kam se má model po vybrání spawnout (pokud necháš prázdné, spawnuje se na pozici tohoto objektu)")]
     public Transform spawnPoint;
+
+    [Header("Web Model Loader")]
+    [SerializeField] private RuntimeModelLoader modelLoader;
+    [Tooltip("Popisek tlačítka pro otevření webu s modely")]
+    [SerializeField] private string webCatalogButtonLabel = "Web Modely";
+    [Tooltip("Popisek tlačítka pro načtení zkopírované URL ze schránky")]
+    [SerializeField] private string clipboardButtonLabel = "Načíst URL";
 
     private GameObject currentSpawnedModel;
     private GameObject[] modelPrefabs;
 
     void Start()
     {
-        // Při startu hry schováme menu
         if (menuCanvas != null)
         {
             menuCanvas.SetActive(false);
         }
 
-        // Automaticky načte všechny prefaby ze složky Assets/Resources/Models
         modelPrefabs = Resources.LoadAll<GameObject>("Models");
 
         if (modelPrefabs.Length == 0)
@@ -37,7 +42,6 @@ public class GalleryMenuSpawner : MonoBehaviour
             Debug.LogWarning("Ve složce Assets/Resources/Models nebyly nalezeny žádné modely!");
         }
 
-        // Vygeneruje mřížku tlačítek podle nalezených modelů
         GenerateMenuButtons();
     }
 
@@ -49,35 +53,89 @@ public class GalleryMenuSpawner : MonoBehaviour
             return;
         }
 
-        // Vyčistíme případná stará tlačítka
         foreach (Transform child in buttonContainer)
         {
             Destroy(child.gameObject);
         }
 
-        // Pro každý nalezený model vytvoříme tlačítko v tabulce
         for (int i = 0; i < modelPrefabs.Length; i++)
         {
-            int index = i; // Nutné pro správné předání indexu do skriptu tlačítka
+            int index = i;
             GameObject newButtonObj = Instantiate(buttonPrefab, buttonContainer);
-            
-            // Nastavení textu tlačítka podle názvu souboru/prefabu
+
             TextMeshProUGUI btnText = newButtonObj.GetComponentInChildren<TextMeshProUGUI>();
             if (btnText != null && modelPrefabs[i] != null)
             {
                 btnText.text = modelPrefabs[i].name;
             }
 
-            // Programové přidání funkce po kliknutí na tlačítko
             Button btn = newButtonObj.GetComponent<Button>();
             if (btn != null)
             {
                 btn.onClick.AddListener(() => SelectAndSpawnModel(index));
             }
         }
+
+        if (modelLoader != null)
+        {
+            GameObject webBtnObj = Instantiate(buttonPrefab, buttonContainer);
+            webBtnObj.name = "Button_WebCatalog";
+
+            TextMeshProUGUI webBtnText = webBtnObj.GetComponentInChildren<TextMeshProUGUI>();
+            if (webBtnText != null)
+            {
+                webBtnText.text = webCatalogButtonLabel;
+            }
+
+            Button webBtn = webBtnObj.GetComponent<Button>();
+            if (webBtn != null)
+            {
+                webBtn.onClick.AddListener(OnWebCatalogClicked);
+            }
+
+            GameObject clipBtnObj = Instantiate(buttonPrefab, buttonContainer);
+            clipBtnObj.name = "Button_LoadClipboard";
+
+            TextMeshProUGUI clipBtnText = clipBtnObj.GetComponentInChildren<TextMeshProUGUI>();
+            if (clipBtnText != null)
+            {
+                clipBtnText.text = clipboardButtonLabel;
+            }
+
+            Button clipBtn = clipBtnObj.GetComponent<Button>();
+            if (clipBtn != null)
+            {
+                clipBtn.onClick.AddListener(OnLoadClipboardClicked);
+            }
+        }
     }
 
-    // Metoda pro otevření/zavření menu (přiřazuje se do Select Entered na domě)
+    private void OnWebCatalogClicked()
+    {
+        if (menuCanvas != null)
+        {
+            menuCanvas.SetActive(false);
+        }
+
+        if (modelLoader != null)
+        {
+            modelLoader.OpenModelCatalog();
+        }
+    }
+
+    private void OnLoadClipboardClicked()
+    {
+        if (menuCanvas != null)
+        {
+            menuCanvas.SetActive(false);
+        }
+
+        if (modelLoader != null)
+        {
+            modelLoader.LoadModelFromClipboard();
+        }
+    }
+
     public void ToggleMenu()
     {
         if (menuCanvas != null)
@@ -86,7 +144,6 @@ public class GalleryMenuSpawner : MonoBehaviour
         }
     }
 
-    // Metoda pro spawnutí zvoleného modelu
     public void SelectAndSpawnModel(int index)
     {
         if (modelPrefabs == null || index < 0 || index >= modelPrefabs.Length)
@@ -95,7 +152,6 @@ public class GalleryMenuSpawner : MonoBehaviour
             return;
         }
 
-        // Pokud už na místě nějaký model stojí, nejprve ho smažeme
         if (currentSpawnedModel != null)
         {
             Destroy(currentSpawnedModel);
@@ -104,16 +160,13 @@ public class GalleryMenuSpawner : MonoBehaviour
         Vector3 targetPosition = spawnPoint != null ? spawnPoint.position : transform.position;
         Quaternion targetRotation = spawnPoint != null ? spawnPoint.rotation : transform.rotation;
 
-        // Vytvoříme nový model z prefabu ve složce Resources/Models
         currentSpawnedModel = Instantiate(modelPrefabs[index], targetPosition, targetRotation);
 
-        // AUTOMATICKÁ POJISTKA: Pokud model nemá skript VRModelAdapter, kód ho sám okamžitě doplní
         if (currentSpawnedModel.GetComponent<VRModelAdapter>() == null)
         {
             currentSpawnedModel.AddComponent<VRModelAdapter>();
         }
 
-        // Po výběru modelu menu automaticky schováme
         if (menuCanvas != null)
         {
             menuCanvas.SetActive(false);
